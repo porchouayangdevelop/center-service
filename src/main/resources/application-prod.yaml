@@ -1,0 +1,52 @@
+spring:
+  datasource:
+
+    hikari: &hikariSettings
+      minimum-idle: 2
+      maximum-pool-size: 5
+      idle-timeout: 60000
+      connection-timeout: 30000
+      max-lifetime: 120000
+    driver-class-name: org.mariadb.jdbc.Driver
+    #CoreDataSource
+    coredatasource:
+      primary:
+        jdbc-url: jdbc:mariadb://${CORE_DB_HOST:10.151.101.200}:${CORE_DB_PORT:4008}/${CORE_DB_NAME:core001}
+        username: ${CORE_DB_USER:porchouayang}
+        password: ${CORE_DB_PASSWORD:Por32@2025}
+        hikari: *hikariSettings
+      secondary:
+        jdbc-url: jdbc:mariadb://${CORE_DB_HOST:10.151.101.200}:${CORE_DB_PORT:4006}/${CORE_DB_NAME:core001}
+        username: ${CORE_DB_USER:cif_api}
+        password: ${CORE_DB_PASSWORD:Cif@2025}
+        hikari: *hikariSettings
+    # odsDataSource
+    odsdatasource:
+      primary:
+        jdbc-url: jdbc:mariadb://${DB_ODS_HOST:10.151.101.201}:${ODS_DB_PORT:4008}/${ODS_DB_NAME:ods}
+        username: ${ODS_DB_USER:porchouayang}
+        password: ${ODS_DB_PASSWORD:Porchouayang@2025}
+        hikari: *hikariSettings
+#      secondary:
+#        jdbc-url: jdbc:mariadb://${DB_ODS_HOST:10.151.101.201}:${ODS_DB_PORT:4006}/${ODS_DB_NAME:ods}
+#        username: ${ODS_DB_USER:ods}
+#        password: ${ODS_DB_PASSWORD:Dba26@Apb2024}
+    #dcpTradeDataSource
+    dcptradedatasource:
+      jdbc-url: jdbc:mariadb://${DCPTRADE_DB_HOST:10.151.101.205}:${DCPTRADE_DB_PORT:4008}/${DCPTRADE_DB_NAME:dcpTrade}
+      username: ${DCPTRADE_DB_USER:porchouayang}
+      password: ${DCPTRADE_DB_PASSWORD:Por32@2025}
+      hikari: *hikariSettings
+
+#    storeDataSource:
+#      url: jdbc:mariadb://10.1.11.179:3306/store_service_dev
+#      username: dev_user
+#      password: dev_password
+
+
+
+server:
+  servlet:
+    context-path: /api/v1/prd/center-service
+  port: 9070
+  address: 0.0.0.0
