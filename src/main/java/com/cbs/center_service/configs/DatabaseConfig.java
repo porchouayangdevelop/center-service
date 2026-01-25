@@ -7,6 +7,7 @@ import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.context.annotation.Profile;
 
 import javax.sql.DataSource;
 
@@ -104,6 +105,7 @@ public class DatabaseConfig {
   @Bean(name = "coreDataSource")
   @Primary
   @ConfigurationProperties(prefix = "spring.datasource.coredatasource")
+  @Profile("dev")
   public DataSource coreDataSource() {
 //    DriverManagerDataSource dataSource = new DriverManagerDataSource();
 //
@@ -119,6 +121,7 @@ public class DatabaseConfig {
 
   @Bean(name = "odsDataSource")
   @ConfigurationProperties(prefix = "spring.datasource.odsdatasource")
+  @Profile("dev")
   public DataSource odsDataSource() {
 //    DriverManagerDataSource dataSource = new DriverManagerDataSource();
 //    dataSource.setDriverClassName(driver);
@@ -132,7 +135,8 @@ public class DatabaseConfig {
   }
 
   @Bean(name = "dcpDataSource")
-
+  @Profile("dev")
+  @ConfigurationProperties(prefix = "spring.datasource.dcptradedatasourcedefault")
   public DataSource dcpDataSource() {
 //    DriverManagerDataSource dataSource = new DriverManagerDataSource();
 //    dataSource.setDriverClassName(driver);
@@ -147,6 +151,7 @@ public class DatabaseConfig {
 
   @Bean(name = "prodCoreReadDataSource")
   @ConfigurationProperties(prefix = "spring.datasource.coredatasource.primary")
+  @Profile("prod")
   public DataSource prodCoreReadDataSource() {
 //    DriverManagerDataSource dataSource = new DriverManagerDataSource();
 //    dataSource.setDriverClassName(driver);
@@ -162,6 +167,7 @@ public class DatabaseConfig {
 
   @Bean(name = "prodCoreExecuteDataSource")
   @ConfigurationProperties(prefix = "spring.datasource.coredatasource.secondary")
+  @Profile("prod")
   public DataSource prodCoreExecuteDataSource() {
 //    DriverManagerDataSource dataSource = new DriverManagerDataSource();
 //    dataSource.setDriverClassName(driver);
@@ -176,6 +182,7 @@ public class DatabaseConfig {
 
   @Bean(name = "prodOdsReadDataSource")
   @ConfigurationProperties(prefix = "spring.datasource.odsdatasource.primary")
+  @Profile("prod")
   public DataSource prodOdsReadDataSource() {
 //    DriverManagerDataSource dataSource = new DriverManagerDataSource();
 //    dataSource.setDriverClassName(driver);
@@ -200,6 +207,7 @@ public class DatabaseConfig {
 //  }
 
   @Bean(name = "prodDcpDataSource")
+  @Profile("prod")
   @ConfigurationProperties(prefix = "spring.datasource.dcptradedatasource")
   public DataSource prodDcpDataSource() {
 //    DriverManagerDataSource dataSource = new DriverManagerDataSource();

@@ -13,22 +13,25 @@ spring:
       jdbc-url: jdbc:mariadb://${CORE_DB_HOST:10.151.146.165}:${CORE_DB_PORT:3306}/${CORE_DB_NAME:core001}
       username: ${CORE_DB_USER:core}
       password: ${CORE_DB_PASSWORD:Dba21@Apb2024}
-      hikari: *hikariSettings
+      driver-class-name: org.mariadb.jdbc.Driver
+      <<: *hikariSettings
 
     odsdatasource:
       jdbc-url: jdbc:mariadb://${DB_ODS_HOST:10.151.146.165}:${ODS_DB_PORT:3306}/${ODS_DB_NAME:ods}
-      username: ${ODS_DB_USER:ods}
+      username: ${ODS_DB_USER:report}
       password: ${ODS_DB_PASSWORD:Dba26@Apb2024}
-      hikari: *hikariSettings
+      driver-class-name: org.mariadb.jdbc.Driver
+      <<: *hikariSettings
 
-    dcptradedatasource:
-      jdbc-url: jdbc:mariadb://${DCPTRADE_DB_HOST:10.151.146.165}:${DCPTRADE_DB_PORT:3306}/${DCPTRADE_DB_NAME:dcpTrade}
-      username: ${DCPTRADE_DB_USER:dcpTrade}
+    dcptradedatasourcedefault:
+      jdbc-url: jdbc:mariadb://${DCPTRADE_DB_HOST:10.151.146.165}:${DCPTRADE_DB_PORT:3306}/${DCPTRADE_DB_NAME:dcp_trade}
+      username: ${DCPTRADE_DB_USER:dcp_trade}
       password: ${DCPTRADE_DB_PASSWORD:Dba23@Apb2024}
-      hikari: *hikariSettings
+      driver-class-name: org.mariadb.jdbc.Driver
+      <<: *hikariSettings
 
 #    storeDataSource:
-#      url: jdbc:mariadb://10.1.11.179:3306/store_service_dev
+#      jdbc-url: jdbc:mariadb://10.1.11.179:3306/store_service_dev
 #      username: dev_user
 #      password: dev_password
 

@@ -3,9 +3,9 @@ package com.cbs.center_service.services;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
-import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -18,18 +18,35 @@ import java.util.Map;
 @Service
 @Slf4j
 public class TellerService {
+  private final DataSourceManager dataSourceManager;
 
   @Autowired
-  private DataSourceManager dataSourceManager;
+  public TellerService(DataSourceManager dataSourceManager) {
+    this.dataSourceManager = dataSourceManager;
+  }
 
-  public List<Map<String,Object>> getTellers(){
-    List<Map<String ,Object>> lists = new ArrayList<>();
+  @Autowired
+  private Environment environment;
+
+  public List<Map<String, Object>> getTellers() {
+    List<Map<String, Object>> lists = new ArrayList<>();
     Connection conn = null;
     PreparedStatement stmt = null;
     ResultSet rs = null;
 
     try {
-      conn = dataSourceManager.getCoreConnection();
+      String profile = environment.getProperty("spring.profiles.active");
+
+      log.info("Active profile: {}", profile);
+
+      if (profile.equals("prod")) {
+        conn = dataSourceManager.getProdCoreReadConnection();
+        log.info("Connected to PROD CORE database for fetching tellers");
+      } else {
+        conn = dataSourceManager.getCoreConnection();
+        log.info("Connected to UAT CORE database for fetching tellers");
+      }
+
       stmt = conn.prepareStatement("WITH ROLE_DETAIL AS (SELECT\n" +
           "                       ASS_ID,\n" +
           "                       ATH_TYP,\n" +
@@ -104,33 +121,33 @@ public class TellerService {
           "FROM ROLE_PIVOT a\n" +
           "       RIGHT JOIN TELLER_INFO b ON a.ASS_ID = b.UserID");
       rs = stmt.executeQuery();
-      while (rs.next()){
-        Map<String ,Object> row = new HashMap<>();
-        row.put("UserID",rs.getString("UserID"));
-        row.put("Branch",rs.getString("Branch"));
-        row.put("UserName",rs.getString("UserName"));
-        row.put("UserLevel",rs.getString("UserLevel"));
-        row.put("TransactionLevel",rs.getString("TransactionLevel"));
-        row.put("AuthorizationLevel",rs.getString("AuthorizationLevel"));
-        row.put("TerminalType",rs.getString("TerminalType"));
-        row.put("UserType",rs.getString("UserType"));
-        row.put("Department",rs.getString("Department"));
-        row.put("AuthorizationRegion",rs.getString("AuthorizationRegion"));
-        row.put("AmountAuthorizationCode",rs.getString("AmountAuthorizationCode"));
-        row.put("Telephone",rs.getString("Telephone"));
-        row.put("Email",rs.getString("Email"));
-        row.put("ActiveStatus",rs.getString("ActiveStatus"));
-        row.put("Operation_CNT",rs.getString("Operation_CNT"));
-        row.put("Operation_Roles",rs.getString("Operation_Roles"));
-        row.put("Authorization_CNT",rs.getString("Authorization_CNT"));
-        row.put("Authorization_Roles",rs.getString("Authorization_Roles"));
+      while (rs.next()) {
+        Map<String, Object> row = new HashMap<>();
+        row.put("UserID", rs.getString("UserID"));
+        row.put("Branch", rs.getString("Branch"));
+        row.put("UserName", rs.getString("UserName"));
+        row.put("UserLevel", rs.getString("UserLevel"));
+        row.put("TransactionLevel", rs.getString("TransactionLevel"));
+        row.put("AuthorizationLevel", rs.getString("AuthorizationLevel"));
+        row.put("TerminalType", rs.getString("TerminalType"));
+        row.put("UserType", rs.getString("UserType"));
+        row.put("Department", rs.getString("Department"));
+        row.put("AuthorizationRegion", rs.getString("AuthorizationRegion"));
+        row.put("AmountAuthorizationCode", rs.getString("AmountAuthorizationCode"));
+        row.put("Telephone", rs.getString("Telephone"));
+        row.put("Email", rs.getString("Email"));
+        row.put("ActiveStatus", rs.getString("ActiveStatus"));
+        row.put("Operation_CNT", rs.getString("Operation_CNT"));
+        row.put("Operation_Roles", rs.getString("Operation_Roles"));
+        row.put("Authorization_CNT", rs.getString("Authorization_CNT"));
+        row.put("Authorization_Roles", rs.getString("Authorization_Roles"));
         lists.add(row);
       }
       return lists;
-    }catch (SQLException ex){
-    log.error("Error getting tellers: {}", ex.getMessage());
-    }finally {
-      dataSourceManager.closeResource(conn,stmt,null,rs);
+    } catch (SQLException ex) {
+      log.error("Error getting tellers: {}", ex.getMessage());
+    } finally {
+      dataSourceManager.closeResource(conn, stmt, null, rs);
     }
     return lists;
   }

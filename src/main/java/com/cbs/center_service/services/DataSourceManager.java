@@ -3,6 +3,7 @@ package com.cbs.center_service.services;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import javax.sql.DataSource;
@@ -13,27 +14,27 @@ import java.sql.SQLException;
 @Slf4j
 public class DataSourceManager {
 
-  @Autowired
+  @Autowired(required = false)
   @Qualifier("coreDataSource")
   private DataSource coreDataSource;
 
-  @Autowired
+  @Autowired(required = false)
   @Qualifier("odsDataSource")
   private DataSource odsDataSource;
 
-  @Autowired
+  @Autowired(required = false)
   @Qualifier("dcpDataSource")
   private DataSource dcpDataSource;
 
-  @Autowired
+  @Autowired(required = false)
   @Qualifier("prodCoreReadDataSource")
   private DataSource prodCoreReadDataSource;
 
-  @Autowired
+  @Autowired(required = false)
   @Qualifier("prodCoreExecuteDataSource")
   private DataSource prodCoreExecuteDataSource;
 
-  @Autowired
+  @Autowired(required = false)
   @Qualifier("prodOdsReadDataSource")
   private DataSource prodOdsReadDataSource;
 
@@ -41,22 +42,22 @@ public class DataSourceManager {
 //  @Qualifier("prodOdsExecuteDataSource")
 //  private DataSource prodOdsExecuteDataSource;
 
-  @Autowired
+  @Autowired(required = false)
   @Qualifier("prodDcpDataSource")
   private DataSource prodDcpDataSource;
 
   public Connection getCoreConnection() throws SQLException {
-    log.info("Getting connection from CORE database");
+    log.info("Getting connection from UAT CORE database");
     return coreDataSource.getConnection();
   }
 
   public Connection getOdsConnection() throws SQLException {
-    log.info("Getting connection from ODS database");
+    log.info("Getting connection from UAT ODS database");
     return odsDataSource.getConnection();
   }
 
   public Connection getDcpConnection() throws SQLException {
-    log.info("Getting connection from DCP database");
+    log.info("Getting connection UAT from database");
     return dcpDataSource.getConnection();
   }
 

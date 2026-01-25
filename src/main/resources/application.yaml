@@ -2,13 +2,14 @@ spring:
   application:
     name: center-service
   profiles:
-    active: dev
-
-
+    active: ${PROFILE_ACTIVES:prod}
 
 logging:
   charset:
     console: UTF-8
     file: UTF-8
   level:
-    root: warn
+    root: INFO
+    web: debug
+
+    com.zaxxer.hikari: warn
