@@ -1,6 +1,6 @@
 spring:
-  autoconfigure:
-    exclude: com.scalar.maven.webjar.ScalarAutoConfiguration
+#  autoconfigure:
+#    exclude: com.scalar.maven.webjar.ScalarAutoConfiguration
   datasource:
 
     hikari: &hikariSettings
@@ -59,8 +59,8 @@ server:
 scalar:
   enabled: true
   url: /openapi.json
-  path: /scalar
-  theme: deepSpace
+  path: /api-docs
+  theme: bluePlanet
   layout: modern
   documentDownloadType: both
   actuatorEnabled: true
@@ -68,10 +68,13 @@ scalar:
   searchHotKey: ctrl+k
   tagSorter: alpha
 management:
-  endpoint:
+  endpoints:
     web:
-#      base-path: /actuator
+      base-path: /actuator
       exposure:
-        include: scalar
+        include: health,info,scalar
+  endpoint:
+    health:
+      show-details: when-authorized
 
 

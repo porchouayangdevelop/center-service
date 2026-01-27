@@ -11,5 +11,34 @@ logging:
   level:
     root: INFO
     web: debug
+    org:
+      springdoc: debug
+    com:
+      scalar: debug
 
     com.zaxxer.hikari: warn
+
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    enabled: true
+  packages-to-scan: com.cbs.center_service.controllers
+  show-actuator: false
+
+scalar:
+  enabled: true
+  path: /api-docs
+  theme: bluePlanet
+  layout: modern
+  sources[0]:
+    url: /openapi.json
+    title: API v1 Center Service
+    slug: api-v1
+    default: true
+  url: /openapi.json
+  darkMode: true
+  hideSearch: false
+  customCss: "body { font-family: 'Arial', sans-serif; }"
+  actuatorEnabled: true
