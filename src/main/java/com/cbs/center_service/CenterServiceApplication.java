@@ -2,6 +2,7 @@ package com.cbs.center_service;
 
 import com.cbs.center_service.services.DataSourceManager;
 import com.cbs.center_service.services.TellerService;
+import com.scalar.maven.webjar.ScalarAutoConfiguration;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
@@ -20,6 +21,8 @@ public class CenterServiceApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(CenterServiceApplication.class, args);
+
+
 
 	}
 

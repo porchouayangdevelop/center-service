@@ -1,4 +1,6 @@
 spring:
+  autoconfigure:
+    exclude: com.scalar.maven.webjar.ScalarAutoConfiguration
   datasource:
 
     hikari: &hikariSettings
@@ -27,7 +29,7 @@ spring:
       primary:
         jdbc-url: jdbc:mariadb://${DB_ODS_HOST:10.151.101.201}:${ODS_DB_PORT:4008}/${ODS_DB_NAME:ods}
         username: ${ODS_DB_USER:porchouayang}
-        password: ${ODS_DB_PASSWORD:Porchouayang@2025}
+        password: ${ODS_DB_PASSWORD:Porchouayang@2026}
         driver-class-name: org.mariadb.jdbc.Driver
         <<: *hikariSettings
 #      secondary:
@@ -54,3 +56,22 @@ server:
     context-path: /api/v1/prd/center-service
   port: 9090
   address: 0.0.0.0
+scalar:
+  enabled: true
+  url: /openapi.json
+  path: /scalar
+  theme: deepSpace
+  layout: modern
+  documentDownloadType: both
+  actuatorEnabled: true
+  operationTitleSource: path
+  searchHotKey: ctrl+k
+  tagSorter: alpha
+management:
+  endpoint:
+    web:
+#      base-path: /actuator
+      exposure:
+        include: scalar
+
+

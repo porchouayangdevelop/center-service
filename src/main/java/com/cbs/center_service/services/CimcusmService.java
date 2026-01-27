@@ -161,7 +161,7 @@ public class CimcusmService {
     } else if (cif.length() != 16 && cif.startsWith("0000")) {
       responseMap.put("error", "CIF length is invalid or does not match the expected format.");
       responseList.add(responseMap);
-      return responseList;
+//      return responseList;
     } else {
       cimcusm.setCif(cardInfo.getCiNo());
     }
@@ -169,13 +169,13 @@ public class CimcusmService {
     if (!populateCustomerInfo(cimcusm, cardInfo)) {
       responseMap.put("error", "No customer data found for the provided CIF.");
       responseList.add(responseMap);
-      return responseList;
+//      return responseList;
     }
 
     if (!populateAccountInfo(cimcusm, cardInfo)) {
       responseMap.put("error", "No account data found for the provided CIF.");
       responseList.add(responseMap);
-      return responseList;
+//      return responseList;
     }
 
     return cimcusm;
