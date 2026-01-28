@@ -53,20 +53,22 @@ spring:
 
 server:
   servlet:
-    context-path: /api/v1/prd/center-service
-  port: 9090
-  address: 0.0.0.0
+    context-path: /api/v1/${PROFILE_ACTIVES:prd}/center-service
+  port: ${PORT:9090}
+  address: ${HOST:0.0.0.0}
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+
 scalar:
   enabled: true
-  url: /openapi.json
-  path: /api-docs
+  url: /api/v1/${PROFILE_ACTIVES:dev}/center-service/openapi.json
+  path: /scalar
   theme: bluePlanet
   layout: modern
   documentDownloadType: both
   actuatorEnabled: true
-  operationTitleSource: path
-  searchHotKey: ctrl+k
-  tagSorter: alpha
 management:
   endpoints:
     web:

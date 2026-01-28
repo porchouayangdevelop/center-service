@@ -1,5 +1,6 @@
 package com.cbs.center_service.services;
 
+import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -9,10 +10,16 @@ import org.springframework.stereotype.Service;
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 @Service
 @Slf4j
 public class DataSourceManager {
+
+  private final Map<String ,DataSource> dataSourceMap = new ConcurrentHashMap<>();
+
 
   @Autowired(required = false)
   @Qualifier("coreDataSource")
@@ -106,6 +113,26 @@ public class DataSourceManager {
     } catch (SQLException ex) {
       log.error("Error closing resource: {}", ex.getMessage());
     }
+  }
+
+  @PostConstruct
+  public void init(){
+    dataSourceMap.put("coreDataSource", coreDataSource);
+    dataSourceMap.put("odsDataSource", odsDataSource);
+    dataSourceMap.put("dcpDataSource", dcpDataSource);
+    dataSourceMap.put("prodCoreReadDataSource", prodCoreReadDataSource);
+    dataSourceMap.put("prodCoreExecuteDataSource", prodCoreExecuteDataSource);
+    dataSourceMap.put("prodOdsReadDataSource", prodOdsReadDataSource);
+    dataSourceMap.put("prodDcpDataSource", prodDcpDataSource);
+
+  }
+
+  public DataSource getDataSource(String key) {
+    return dataSourceMap.get(key);
+  }
+
+  public void addDataSource(String key, DataSource dataSource) {
+    dataSourceMap.put(key, dataSource);
   }
 
 }

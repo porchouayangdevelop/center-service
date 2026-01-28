@@ -2,7 +2,7 @@ spring:
   application:
     name: center-service
   profiles:
-    active: ${PROFILE_ACTIVES:prod}
+    active: ${PROFILE_ACTIVES:dev}
 
 logging:
   charset:
@@ -29,16 +29,8 @@ springdoc:
 
 scalar:
   enabled: true
-  path: /api-docs
+  actuatorEnabled: true
+  path: /scalar
+  url: /api/v1/${PROFILE_ACTIVES:dev}/center-service/openapi.json
   theme: bluePlanet
   layout: modern
-  sources[0]:
-    url: /openapi.json
-    title: API v1 Center Service
-    slug: api-v1
-    default: true
-  url: /openapi.json
-  darkMode: true
-  hideSearch: false
-  customCss: "body { font-family: 'Arial', sans-serif; }"
-  actuatorEnabled: true

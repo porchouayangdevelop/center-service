@@ -1,4 +1,6 @@
 spring:
+#  autoconfigure:
+#    exclude: com.scalar.maven.webjar.ScalarAutoConfiguration
   datasource:
 
     hikari: &hikariSettings
@@ -39,9 +41,9 @@ spring:
 
 server:
   servlet:
-    context-path: /api/v1/uat/center-service
-  port: 9070
-  address: 0.0.0.0
+    context-path: /api/v1/${PROFILE_ACTIVES:uat}/center-service
+  port: ${PORT:9090}
+  address: ${HOST:0.0.0.0}
 
 springdoc:
   api-docs:
@@ -53,3 +55,27 @@ springdoc:
 
 scalar:
   enabled: true
+#  url: /api/v1/${PROFILE_ACTIVES:uat}/center-service/api-docs
+  url: /api/v1/${PROFILE_ACTIVES:dev}/center-service/openapi.json
+  path: /scalar
+  actuator-enabled: true
+  show-sidebar: true
+  hide-models: false
+  hide-test-request-button: false
+  hide-search: false
+  custom-css: null
+  dark-mode: true
+  document-download-type: both
+  hide-dark-mode-toggle: false
+  theme: bluePlanet
+  layout: modern
+management:
+  endpoints:
+    web:
+#      base-path: /actuator
+      exposure:
+        include: health,info,scalar
+  endpoint:
+    health:
+      show-details: always
+
