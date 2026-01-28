@@ -1,105 +1,24 @@
 package com.cbs.center_service.configs;
 
 import com.zaxxer.hikari.HikariDataSource;
-import org.springframework.beans.factory.annotation.Value;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
+import org.springframework.core.env.Environment;
 
 import javax.sql.DataSource;
 
+@Slf4j
 @Configuration
 public class DatabaseConfig {
 
-  //UAT DataSource Properties
-
-  // UAT/core DataSource
-//  @Value("${spring.datasource.coredatasource.jdbc-url}")
-  private String coreUrl;
-
-  //  @Value("${spring.datasource.coredatasource.username}")
-  private String coreUsername;
-
-  //  @Value("${spring.datasource.coredatasource.password}")
-  private String corePassword;
-
-  // UAT/ods DataSource
-//  @Value("${spring.datasource.odsdatasource.jdbc-url}")
-  private String odsUrl;
-
-  //  @Value("${spring.datasource.odsdatasource.username}")
-  private String odsUsername;
-
-  //  @Value("${spring.datasource.odsdatasource.password}")
-  private String odsPassword;
-
-  // UAT/dcp DataSource
-//  @Value("${spring.datasource.dcptradedatasource.jdbc-url}")
-  private String dcpUrl;
-
-  //  @Value("${spring.datasource.dcptradedatasource.username}")
-  private String dcpUsername;
-
-  //  @Value("${spring.datasource.dcptradedatasource.password}")
-  private String dcpPassword;
-
-  //PROD DataSource Properties
-  // PROD/core read only DataSource
-//  @Value("${spring.datasource.coredatasource.primary.jdbc-url}")
-  private String prodCoreReadUrl;
-
-  //  @Value("${spring.datasource.coredatasource.primary.username}")
-  private String prodCoreReadUsername;
-
-  //  @Value("${spring.datasource.coredatasource.primary.password}")
-  private String prodCoreReadPassword;
-
-  // PROD/core execute DataSource
-//  @Value("${spring.datasource.coredatasource.secondary.jdbc-url}")
-  private String prodCoreExecuteUrl;
-
-  //  @Value("${spring.datasource.coredatasource.secondary.username}")
-  private String prodCoreExecuteUsername;
-
-  //  @Value("${spring.datasource.coredatasource.secondary.password}")
-  private String prodCoreExecutePassword;
-
-  // PROD/ods read only DataSource
-//  @Value("${spring.datasource.odsdatasource.primary.jdbc-url}")
-  private String prodOdsReadUrl;
-
-  //  @Value("${spring.datasource.odsdatasource.primary.username}")
-  private String prodOdsReadUsername;
-
-  //  @Value("${spring.datasource.odsdatasource.primary.password}")
-  private String prodOdsReadPassword;
-
-  // PROD/ods execute DataSource
-//  @Value("${spring.datasource.odsdatasource.secondary.jdbc-url}")
-//  private String prodOdsExecuteUrl;
-//
-//  @Value("${spring.datasource.odsdatasource.secondary.username}")
-//  private String prodOdsExecuteUsername;
-//
-//  @Value("${spring.datasource.odsdatasource.secondary.password}")
-//  private String prodOdsExecutePassword;
-
-  // PROD/dcp DataSource
-//  @Value("${spring.datasource.dcptradedatasource.jdbc-url}")
-  private String prodDcpUrl;
-
-  //  @Value("${spring.datasource.dcptradedatasource.username}")
-  private String prodDcpUsername;
-
-  //  @Value("${spring.datasource.dcptradedatasource.password}")
-  private String prodDcpPassword;
-
-  @Value("${spring.datasource.driver-class-name}")
-  private String driver;
-
+  @Autowired
+  private Environment env;
 
   //Bean definitions for DataSources will go here
   @Bean(name = "coreDataSource")
@@ -107,28 +26,23 @@ public class DatabaseConfig {
   @ConfigurationProperties(prefix = "spring.datasource.coredatasource")
   @Profile("dev")
   public DataSource coreDataSource() {
-//    DriverManagerDataSource dataSource = new DriverManagerDataSource();
-//
-//    dataSource.setDriverClassName(driver);
-//    dataSource.setUrl(coreUrl);
-//    dataSource.setUsername(coreUsername);
-//    dataSource.setPassword(corePassword);
-//    return dataSource;
-    return DataSourceBuilder.create()
+    HikariDataSource dataSource = DataSourceBuilder.create()
         .type(HikariDataSource.class)
         .build();
+
+    if (dataSource.getPoolName() == null || dataSource.getPoolName().isEmpty()) {
+      dataSource.setPoolName(String.format("%s Core Connection Pool", env.getActiveProfiles()));
+    }
+
+    logPoolConfiguration("coreDataSource", dataSource);
+
+    return dataSource;
   }
 
   @Bean(name = "odsDataSource")
   @ConfigurationProperties(prefix = "spring.datasource.odsdatasource")
   @Profile("dev")
   public DataSource odsDataSource() {
-//    DriverManagerDataSource dataSource = new DriverManagerDataSource();
-//    dataSource.setDriverClassName(driver);
-//    dataSource.setUrl(odsUrl);
-//    dataSource.setUsername(odsUsername);
-//    dataSource.setPassword(odsPassword);
-//    return dataSource;
     return DataSourceBuilder.create()
         .type(HikariDataSource.class)
         .build();
@@ -138,28 +52,25 @@ public class DatabaseConfig {
   @Profile("dev")
   @ConfigurationProperties(prefix = "spring.datasource.dcptradedatasourcedefault")
   public DataSource dcpDataSource() {
-//    DriverManagerDataSource dataSource = new DriverManagerDataSource();
-//    dataSource.setDriverClassName(driver);
-//    dataSource.setUrl(dcpUrl);
-//    dataSource.setUsername(dcpUsername);
-//    dataSource.setPassword(dcpPassword);
-//    return dataSource;
+    return DataSourceBuilder.create()
+        .type(HikariDataSource.class)
+        .build();
+  }
+
+  @Bean(name = "storeDataSource")
+  @Profile("dev")
+  @ConfigurationProperties(prefix = "spring.datasource.storedatasourcedefault")
+  public DataSource storeDataSource() {
     return DataSourceBuilder.create()
         .type(HikariDataSource.class)
         .build();
   }
 
   @Bean(name = "prodCoreReadDataSource")
+  @Primary
   @ConfigurationProperties(prefix = "spring.datasource.coredatasource.primary")
   @Profile("prod")
   public DataSource prodCoreReadDataSource() {
-//    DriverManagerDataSource dataSource = new DriverManagerDataSource();
-//    dataSource.setDriverClassName(driver);
-//    dataSource.setUrl(prodCoreReadUrl);
-//    dataSource.setUsername(prodCoreReadUsername);
-//    dataSource.setPassword(prodCoreReadPassword);
-//    return dataSource;
-
     return DataSourceBuilder.create()
         .type(HikariDataSource.class)
         .build();
@@ -169,12 +80,6 @@ public class DatabaseConfig {
   @ConfigurationProperties(prefix = "spring.datasource.coredatasource.secondary")
   @Profile("prod")
   public DataSource prodCoreExecuteDataSource() {
-//    DriverManagerDataSource dataSource = new DriverManagerDataSource();
-//    dataSource.setDriverClassName(driver);
-//    dataSource.setUrl(prodCoreExecuteUrl);
-//    dataSource.setUsername(prodCoreExecuteUsername);
-//    dataSource.setPassword(prodCoreExecutePassword);
-//    return dataSource;
     return DataSourceBuilder.create()
         .type(HikariDataSource.class)
         .build();
@@ -184,41 +89,57 @@ public class DatabaseConfig {
   @ConfigurationProperties(prefix = "spring.datasource.odsdatasource.primary")
   @Profile("prod")
   public DataSource prodOdsReadDataSource() {
-//    DriverManagerDataSource dataSource = new DriverManagerDataSource();
-//    dataSource.setDriverClassName(driver);
-//    dataSource.setUrl(prodOdsReadUrl);
-//    dataSource.setUsername(prodOdsReadUsername);
-//    dataSource.setPassword(prodOdsReadPassword);
-//    return dataSource;
     return DataSourceBuilder.create()
         .type(HikariDataSource.class)
         .build();
   }
 
-//  @Bean(name = "prodOdsExecuteDataSource")
-//  @ConfigurationProperties(prefix = "spring.datasource.odsdatasource.secondary")
-//  public DataSource prodOdsExecuteDataSource() {
-//    DriverManagerDataSource dataSource = new DriverManagerDataSource();
-//    dataSource.setDriverClassName(driver);
-//    dataSource.setUrl(prodOdsExecuteUrl);
-//    dataSource.setUsername(prodOdsExecuteUsername);
-//    dataSource.setPassword(prodOdsExecutePassword);
-//    return dataSource;
-//  }
+  @Bean(name = "prodOdsExecuteDataSource")
+  @Profile("prod")
+  @ConfigurationProperties(prefix = "spring.datasource.odsdatasource.secondary")
+  public DataSource prodOdsExecuteDataSource() {
+    return DataSourceBuilder.create()
+        .type(HikariDataSource.class)
+        .build();
+  }
 
   @Bean(name = "prodDcpDataSource")
   @Profile("prod")
   @ConfigurationProperties(prefix = "spring.datasource.dcptradedatasource")
   public DataSource prodDcpDataSource() {
-//    DriverManagerDataSource dataSource = new DriverManagerDataSource();
-//    dataSource.setDriverClassName(driver);
-//    dataSource.setUrl(prodDcpUrl);
-//    dataSource.setUsername(prodDcpUsername);
-//    dataSource.setPassword(prodDcpPassword);
-//    return dataSource;
     return DataSourceBuilder.create()
         .type(HikariDataSource.class)
         .build();
   }
+
+  @Bean(name = "prodStoreDataSource")
+  @Profile("prod")
+  @ConfigurationProperties(prefix = "spring.datasource.storedatasource")
+  public DataSource prodStoreDataSource() {
+    return DataSourceBuilder.create()
+        .type(HikariDataSource.class)
+        .build();
+
+  }
+
+  private void logPoolConfiguration(String beanName, HikariDataSource dataSource) {
+    log.info("===== HikariCP Configuration for {} =====", beanName);
+    log.info("Pool Name: {}", dataSource.getPoolName());
+    log.info("JDBC URL: {}", dataSource.getJdbcUrl());
+    log.info("Maximum Pool Size: {}", dataSource.getMaximumPoolSize());
+    log.info("Minimum Idle: {}", dataSource.getMinimumIdle());
+    log.info("Connection Timeout: {}ms", dataSource.getConnectionTimeout());
+    log.info("Idle Timeout: {}ms", dataSource.getIdleTimeout());
+    log.info("Max Lifetime: {}ms", dataSource.getMaxLifetime());
+    log.info("Leak Detection Threshold: {}ms", dataSource.getLeakDetectionThreshold());
+    log.info("=".repeat(20));
+
+  }
+
+  private String maskUrl(String url) {
+    if (url.equals("")) return "";
+    return url.replaceAll("password[^&;]*", "password=***");
+  }
+
 
 }

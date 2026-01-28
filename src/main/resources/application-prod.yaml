@@ -1,6 +1,18 @@
+cors:
+  allowed-origins: ${CORS_ORIGINS:"*"}
+  allowed-methods: GET,POST,PUT,DELETE,PATCH,OPTIONS
+  allowed-headers: ${ALLOWED_HEADERS:- Content-Type
+    - Authorization
+    - X-Requested-With
+    - Accept
+    - Origin}
+  exposed-headers: ${EXPOSED_HEADERS:Authorization,Content-Type,X-Total-Count}
+  allowed-credentials: ${ALLOWED_CREDENTIALS:true}
+  max-age: ${MAX_AGE:3600}
+
 spring:
-#  autoconfigure:
-#    exclude: com.scalar.maven.webjar.ScalarAutoConfiguration
+  #  autoconfigure:
+  #    exclude: com.scalar.maven.webjar.ScalarAutoConfiguration
   datasource:
 
     hikari: &hikariSettings
@@ -9,17 +21,27 @@ spring:
       idle-timeout: 60000
       connection-timeout: 30000
       max-lifetime: 120000
+      keepalive-time: 30000
+      leak-detection-threshold: 60000
+      validation-timeout: 5000
+      connection-test-query: SELECT 1
+      auto-commit: true
+      read-only: false
+      initialization-fail-timeout: 1
+      isolate-internal-queries: false
+      allow-pool-suspension: false
+      register-mbeans: false
     driver-class-name: org.mariadb.jdbc.Driver
     #CoreDataSource
     coredatasource:
       primary:
-        jdbc-url: jdbc:mariadb://${CORE_DB_HOST:10.151.101.200}:${CORE_DB_PORT:4008}/${CORE_DB_NAME:core001}
+        jdbc-url: jdbc:mariadb://${CORE_DB_HOST:10.151.101.200}:${CORE_DB_PORT:4008}/${CORE_DB_NAME:core001}${ENCODE:?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC}
         username: ${CORE_DB_USER:porchouayang}
         password: ${CORE_DB_PASSWORD:Pcy32@2024}
         driver-class-name: org.mariadb.jdbc.Driver
         <<: *hikariSettings
       secondary:
-        jdbc-url: jdbc:mariadb://${CORE_DB_HOST:10.151.101.200}:${CORE_DB_PORT:4008}/${CORE_DB_NAME:core001}
+        jdbc-url: jdbc:mariadb://${CORE_DB_HOST:10.151.101.200}:${CORE_DB_PORT:4008}/${CORE_DB_NAME:core001}${ENCODE:?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC}
         username: ${CORE_SDB_USER:cif_api}
         password: ${CORE_SDB_PASSWORD:Cif@2025}
         driver-class-name: org.mariadb.jdbc.Driver
@@ -27,27 +49,31 @@ spring:
     # odsDataSource
     odsdatasource:
       primary:
-        jdbc-url: jdbc:mariadb://${DB_ODS_HOST:10.151.101.201}:${ODS_DB_PORT:4008}/${ODS_DB_NAME:ods}
+        jdbc-url: jdbc:mariadb://${DB_ODS_HOST:10.151.101.201}:${ODS_DB_PORT:4008}/${ODS_DB_NAME:ods}${ENCODE:?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC}
         username: ${ODS_DB_USER:porchouayang}
         password: ${ODS_DB_PASSWORD:Porchouayang@2026}
         driver-class-name: org.mariadb.jdbc.Driver
         <<: *hikariSettings
-#      secondary:
-#        jdbc-url: jdbc:mariadb://${DB_ODS_HOST:10.151.101.201}:${ODS_DB_PORT:4006}/${ODS_DB_NAME:ods}
-#        username: ${ODS_DB_USER:ods}
-#        password: ${ODS_DB_PASSWORD:Dba26@Apb2024}
+      secondary:
+        jdbc-url: jdbc:mariadb://${DB_ODS_HOST:10.151.101.201}:${ODS_DB_PORT:4006}/${ODS_DB_NAME:ods}${ENCODE:?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC}
+        username: ${ODS_DB_USER:report_api}
+        password: ${ODS_DB_PASSWORD:Ra27@2024}
+        driver-class-name: org.mariadb.jdbc.Driver
     #dcpTradeDataSource
     dcptradedatasource:
-      jdbc-url: jdbc:mariadb://${DCPTRADE_DB_HOST:10.151.101.205}:${DCPTRADE_DB_PORT:4008}/${DCPTRADE_DB_NAME:dcp_trade}
+      jdbc-url: jdbc:mariadb://${DCPTRADE_DB_HOST:10.151.101.205}:${DCPTRADE_DB_PORT:4008}/${DCPTRADE_DB_NAME:dcp_trade}${ENCODE:?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC}
       username: ${DCPTRADE_DB_USER:porchouayang}
       password: ${DCPTRADE_DB_PASSWORD:Pcy32@2024}
       driver-class-name: org.mariadb.jdbc.Driver
       <<: *hikariSettings
 
-#    storeDataSource:
-#      jdbc-url: jdbc:mariadb://10.1.11.179:3306/store_service_dev
-#      username: dev_user
-#      password: dev_password
+    #store database configs
+    storedatasource:
+      jdbc-url: jdbc:mariadb://${STORE_DB_HOST:10.1.11.179}:${STORE_DB_PORT:3306}/${STORE_DB_NAME:all_in_one_prd}?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
+      username: ${STORE_DB_USERNAME:admin}
+      password: ${STORE_DB_PASSWORD:cbs@2025}
+      driver-class-name: org.mariadb.jdbc.Driver
+      <<: *hikariSettings
 
 
 

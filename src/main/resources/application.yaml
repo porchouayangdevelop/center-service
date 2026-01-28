@@ -3,7 +3,17 @@ spring:
     name: center-service
   profiles:
     active: ${PROFILE_ACTIVES:dev}
-
+  #  mvc:
+  web:
+    resources:
+      add-mappings: false
+server:
+  error:
+    include-message: always
+    include-binding-errors: always
+    include-stacktrace: never
+    include-exception: false
+    
 logging:
   charset:
     console: UTF-8
