@@ -1,7 +1,6 @@
 package com.cbs.center_service.controllers;
 
 import com.cbs.center_service.services.TellerService;
-import io.swagger.v3.oas.annotations.OpenAPI31;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -9,7 +8,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -18,7 +16,6 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/tellers")
-@CrossOrigin(origins = {"*"})
 @Tag(name = "CBS Teller API", description = "APIs for managing CBS Tellers")
 public class TellerController {
 

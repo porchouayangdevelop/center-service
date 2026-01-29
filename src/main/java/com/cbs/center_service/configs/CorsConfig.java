@@ -1,13 +1,13 @@
 package com.cbs.center_service.configs;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.catalina.filters.CorsFilter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -17,23 +17,24 @@ import java.util.Arrays;
 @Slf4j
 public class CorsConfig implements WebMvcConfigurer {
 
-  @Value("${cors.allowed-origins}")
+  @Value("${cors.allowed-origins:*}")
   private String[] allowedOrigins;
 
-  @Value("${cors.allowed-methods}")
+  @Value("${cors.allowed-methods:GET,POST,PUT,DELETE,PATCH,OPTIONS}")
   private String[] allowedMethods;
 
   @Value("${cors.allowed-headers:*}")
   private String[] allowedHeaders;
 
-  @Value("${cors.exposed-headers}")
+  @Value("${cors.exposed-headers:}")
   private String[] exposeHeaders;
 
-  @Value("${cors.allowed-credentials}")
+  @Value("${cors.allowed-credentials:true}")
   private boolean allowedCredentials;
 
-  @Value("${cors.max-age}")
+  @Value("${cors.max-age:3600}")
   private long maxAge;
+
 
   public void addCorsMapping(CorsRegistry registry) {
     log.info("Configuration CORS with allowed origins: {} ", Arrays.toString(allowedOrigins));
@@ -52,6 +53,7 @@ public class CorsConfig implements WebMvcConfigurer {
 
     if (allowedOrigins.length == 1 && "*".equals(allowedOrigins[0])) {
       configuration.addAllowedOriginPattern("*");
+      log.warn("CORS configured to allow ALL origins (*). This should not be used in production!");
     } else {
       configuration.setAllowedOrigins(Arrays.asList(allowedOrigins));
     }
@@ -79,7 +81,7 @@ public class CorsConfig implements WebMvcConfigurer {
   }
 
   @Bean
-  public CorsFilter corsFilter(){
-    return new CorsFilter();
+  public CorsFilter corsFilter() {
+    return new CorsFilter(corsConfigurationSource());
   }
 }

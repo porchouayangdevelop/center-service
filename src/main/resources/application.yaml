@@ -1,19 +1,55 @@
-spring:
-  application:
-    name: center-service
-  profiles:
-    active: ${PROFILE_ACTIVES:dev}
-  #  mvc:
-  web:
-    resources:
-      add-mappings: false
 server:
   error:
     include-message: always
     include-binding-errors: always
-    include-stacktrace: never
+    include-stacktrace: on_param
     include-exception: false
-    
+    whitelabel:
+      enabled: false
+  forward-headers-strategy: native
+
+spring:
+  application:
+    name: center-service
+  profiles:
+    active: ${PROFILE_ACTIVES:prod}
+
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+    static-path-pattern: /**
+  web:
+    resources:
+      add-mappings: false
+      static-locations: classpath:/META-INF/resources/, classpath:/resources/, classpath:/static/, classpath:/public/
+
+cors:
+  allowed-origins: "*"
+  allowed-methods: GET,POST,PUT,DELETE,PATCH,OPTIONS
+  allowed-headers: "*"
+  allow-credentials: true
+  max-age: 3600
+
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    enabled: true
+    csrf:
+      enabled: false
+    url: /api-docs
+  packages-to-scan: com.cbs.center_service.controllers
+  show-actuator: true
+
+scalar:
+  enabled: true
+  actuatorEnabled: true
+  path: /scalar
+  url: /api/v1/${PROFILE_ACTIVES:dev}/center-service/openapi.json
+  theme: bluePlanet
+  layout: modern
+
 logging:
   charset:
     console: UTF-8
@@ -27,20 +63,3 @@ logging:
       scalar: debug
 
     com.zaxxer.hikari: warn
-
-springdoc:
-  api-docs:
-    path: /api-docs
-  swagger-ui:
-    path: /swagger-ui.html
-    enabled: true
-  packages-to-scan: com.cbs.center_service.controllers
-  show-actuator: false
-
-scalar:
-  enabled: true
-  actuatorEnabled: true
-  path: /scalar
-  url: /api/v1/${PROFILE_ACTIVES:dev}/center-service/openapi.json
-  theme: bluePlanet
-  layout: modern

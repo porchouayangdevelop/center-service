@@ -1,15 +1,25 @@
-cors:
-  allowed-origins: ${CORS_ORIGINS:"*"}
-  allowed-methods: GET,POST,PUT,DELETE,PATCH,OPTIONS
-  allowed-headers: ${ALLOWED_HEADERS:"*"}
-  exposed-headers: ${EXPOSED_HEADERS:Authorization,Content-Type,X-Total-Count}
-  allowed-credentials: ${ALLOWED_CREDENTIALS:true}
-  max-age: ${MAX_AGE:3600}
-
+server:
+  servlet:
+    context-path: /api/v1/${PROFILE_ACTIVES:dev}/center-service
+  port: ${PORT:9090}
+  address: ${HOST:0.0.0.0}
+  error:
+    include-stacktrace: on_param
+    whitelabel:
+      enabled: false
+    include-message: always
+    include-binding-errors: always
+  forward-headers-strategy: native
 
 spring:
-#  autoconfigure:
-#    exclude: com.scalar.maven.webjar.ScalarAutoConfiguration
+  #  autoconfigure:
+  #    exclude: com.scalar.maven.webjar.ScalarAutoConfiguration
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+  web:
+    resources:
+      add-mappings: false
   datasource:
 
     hikari: &hikariSettings
@@ -28,8 +38,6 @@ spring:
       isolate-internal-queries: false
       allow-pool-suspension: false
       register-mbeans: false
-
-
 
     driver-class-name: org.mariadb.jdbc.Driver
     #CoreDataSource
@@ -64,14 +72,13 @@ spring:
       driver-class-name: org.mariadb.jdbc.Driver
       <<: *hikariSettings
 
-
-
-
-server:
-  servlet:
-    context-path: /api/v1/${PROFILE_ACTIVES:uat}/center-service
-  port: ${PORT:9090}
-  address: ${HOST:0.0.0.0}
+cors:
+  allowed-origins: "*"
+  allowed-methods: GET,POST,PUT,DELETE,PATCH,OPTIONS
+  allowed-headers: "*"
+  exposed-headers: Authorization,Content-Type,X-Total-Count
+  allowed-credentials: true
+  max-age: 3600
 
 springdoc:
   api-docs:
@@ -80,11 +87,16 @@ springdoc:
   swagger-ui:
     enabled: true
     path: /swagger-ui.html
+    url: /api-docs
+    csrf:
+      enabled: false
+  packages-to-scan: com.cbs.center-service.controllers
+  show-actuator: false
 
 scalar:
   enabled: true
-#  url: /api/v1/${PROFILE_ACTIVES:uat}/center-service/api-docs
-  url: /api/v1/${PROFILE_ACTIVES:dev}/center-service/openapi.json
+  url: /api/v1/${PROFILE_ACTIVES:dev}/center-service/api-docs
+#  url: /api-docs
   path: /scalar
   actuator-enabled: true
   show-sidebar: true
@@ -100,7 +112,7 @@ scalar:
 management:
   endpoints:
     web:
-#      base-path: /actuator
+      #      base-path: /actuator
       exposure:
         include: health,info,scalar,metric,hikaricp
   endpoint:
@@ -116,3 +128,9 @@ management:
     data:
       repository:
         metric-name: spring.data.repository.invocations
+logging:
+  level:
+    org:
+      springdoc: debug
+      springframework:
+        web: debug

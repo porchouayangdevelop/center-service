@@ -1,14 +1,16 @@
 cors:
-  allowed-origins: ${CORS_ORIGINS:"*"}
+  allowed-origins:
+    - https://your-production-domain.com
   allowed-methods: GET,POST,PUT,DELETE,PATCH,OPTIONS
-  allowed-headers: ${ALLOWED_HEADERS:- Content-Type
+  allowed-headers:
+    - Content-Type
     - Authorization
     - X-Requested-With
     - Accept
-    - Origin}
-  exposed-headers: ${EXPOSED_HEADERS:Authorization,Content-Type,X-Total-Count}
-  allowed-credentials: ${ALLOWED_CREDENTIALS:true}
-  max-age: ${MAX_AGE:3600}
+    - Origin
+  exposed-headers: Authorization,Content-Type,X-Total-Count
+  allow-credentials: true
+  max-age: 3600
 
 spring:
   #  autoconfigure:
@@ -82,10 +84,24 @@ server:
     context-path: /api/v1/${PROFILE_ACTIVES:prd}/center-service
   port: ${PORT:9090}
   address: ${HOST:0.0.0.0}
+  error:
+    include-stacktrace: never
 
 springdoc:
   api-docs:
-    path: /v3/api-docs
+    path: /api-docs
+    groups:
+      enabled: true
+  swagger-ui:
+    url: /api-docs
+    csrf:
+      enabled: false
+      cookie-name: "same-site"
+    path: /swagger-ui.html
+    enabled: true
+
+  show-actuator: false
+  packages-to-scan: com.cbs.center-service.controllers
 
 scalar:
   enabled: true

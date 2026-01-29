@@ -5,9 +5,11 @@ import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.info.License;
 import io.swagger.v3.oas.models.servers.Server;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 
 import java.util.List;
 
@@ -20,6 +22,9 @@ public class OpenApiConfig {
   @Value("${spring.application.name}")
   private String applicationName;
 
+  @Autowired
+  private Environment environment;
+
   @Bean
   public OpenAPI customOpenAPI() {
     return new OpenAPI()
@@ -30,6 +35,7 @@ public class OpenApiConfig {
             .contact(new Contact()
                 .name("CBS Team")
                 .email("Por@gmail.com")
+                .url("www.pordev.com")
 
             )
             .license(new License()
@@ -39,7 +45,7 @@ public class OpenApiConfig {
         )
         .servers(List.of(new Server()
             .url(contextPath)
-            .description("Current environment server")
+            .description(String.format("Current %s environment", environment.getActiveProfiles()))
         ));
 
   }
