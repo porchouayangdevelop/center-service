@@ -4,9 +4,9 @@ server:
     include-binding-errors: always
     include-stacktrace: on_param
     include-exception: false
-    whitelabel:
-      enabled: false
-  forward-headers-strategy: native
+#    whitelabel:
+#      enabled: false
+#  forward-headers-strategy: native
 
 spring:
   application:
@@ -17,36 +17,29 @@ spring:
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
-    static-path-pattern: /**
   web:
     resources:
-      add-mappings: false
+      add-mappings: true
       static-locations: classpath:/META-INF/resources/, classpath:/resources/, classpath:/static/, classpath:/public/
 
-cors:
-  allowed-origins: "*"
-  allowed-methods: GET,POST,PUT,DELETE,PATCH,OPTIONS
-  allowed-headers: "*"
-  allow-credentials: true
-  max-age: 3600
 
 springdoc:
   api-docs:
     path: /api-docs
+    enabled: true
   swagger-ui:
     path: /swagger-ui.html
     enabled: true
-    csrf:
-      enabled: false
-    url: /api-docs
+#    csrf:
+#      enabled: false
   packages-to-scan: com.cbs.center_service.controllers
   show-actuator: true
 
 scalar:
-  enabled: true
+  enabled: false
   actuatorEnabled: true
   path: /scalar
-  url: /api/v1/${PROFILE_ACTIVES:dev}/center-service/openapi.json
+  url: /v3/api-docs
   theme: bluePlanet
   layout: modern
 

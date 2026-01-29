@@ -3,13 +3,13 @@ server:
     context-path: /api/v1/${PROFILE_ACTIVES:dev}/center-service
   port: ${PORT:9090}
   address: ${HOST:0.0.0.0}
-  error:
-    include-stacktrace: on_param
-    whitelabel:
-      enabled: false
-    include-message: always
-    include-binding-errors: always
-  forward-headers-strategy: native
+#  error:
+#    include-stacktrace: on_param
+#    whitelabel:
+#      enabled: false
+#    include-message: always
+#    include-binding-errors: always
+#  forward-headers-strategy: native
 
 spring:
   #  autoconfigure:
@@ -17,9 +17,9 @@ spring:
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
-  web:
-    resources:
-      add-mappings: false
+#  web:
+#    resources:
+#      add-mappings: true
   datasource:
 
     hikari: &hikariSettings
@@ -73,30 +73,28 @@ spring:
       <<: *hikariSettings
 
 cors:
-  allowed-origins: "*"
+  allowed-origins: ${CORS_ORIGINS:*}
   allowed-methods: GET,POST,PUT,DELETE,PATCH,OPTIONS
-  allowed-headers: "*"
-  exposed-headers: Authorization,Content-Type,X-Total-Count
-  allowed-credentials: true
-  max-age: 3600
+  allowed-headers: ${ALLOWED_HEADERS:*}
+  exposed-headers: ${EXPOSED_HEADERS:Authorization,Content-Type,X-Total-Count}
+  allowed-credentials: ${ALLOWED_CREDENTIALS:false}
+  max-age: ${MAX_AGE:3600}
 
 springdoc:
   api-docs:
     enabled: true
-    path: /api-docs
+    path: /v3/api-docs
   swagger-ui:
     enabled: true
     path: /swagger-ui.html
-    url: /api-docs
-    csrf:
-      enabled: false
+#    csrf:
+#      enabled: false
   packages-to-scan: com.cbs.center-service.controllers
   show-actuator: false
 
 scalar:
   enabled: true
-  url: /api/v1/${PROFILE_ACTIVES:dev}/center-service/api-docs
-#  url: /api-docs
+  url: /v3/api-docs
   path: /scalar
   actuator-enabled: true
   show-sidebar: true
@@ -114,7 +112,7 @@ management:
     web:
       #      base-path: /actuator
       exposure:
-        include: health,info,scalar,metric,hikaricp
+        include: health,info,scalar,metrics,hikaricp
   endpoint:
     health:
       show-details: always

@@ -7,7 +7,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.filter.CorsFilter;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -20,23 +19,24 @@ public class CorsConfig implements WebMvcConfigurer {
   @Value("${cors.allowed-origins:*}")
   private String[] allowedOrigins;
 
-  @Value("${cors.allowed-methods:GET,POST,PUT,DELETE,PATCH,OPTIONS}")
+  @Value("${cors.allowed-methods}")
   private String[] allowedMethods;
 
   @Value("${cors.allowed-headers:*}")
   private String[] allowedHeaders;
 
-  @Value("${cors.exposed-headers:}")
+  @Value("${cors.exposed-headers}")
   private String[] exposeHeaders;
 
-  @Value("${cors.allowed-credentials:true}")
+  @Value("${cors.allowed-credentials}")
   private boolean allowedCredentials;
 
   @Value("${cors.max-age:3600}")
   private long maxAge;
 
 
-  public void addCorsMapping(CorsRegistry registry) {
+  @Override
+  public void addCorsMappings(CorsRegistry registry) {
     log.info("Configuration CORS with allowed origins: {} ", Arrays.toString(allowedOrigins));
     registry.addMapping("/**")
         .allowedOrigins(allowedOrigins)
@@ -80,8 +80,8 @@ public class CorsConfig implements WebMvcConfigurer {
     return source;
   }
 
-  @Bean
-  public CorsFilter corsFilter() {
-    return new CorsFilter(corsConfigurationSource());
-  }
+//  @Bean
+//  public CorsFilter corsFilter() {
+//    return new CorsFilter();
+//  }
 }

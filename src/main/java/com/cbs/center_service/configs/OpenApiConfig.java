@@ -16,7 +16,7 @@ import java.util.List;
 @Configuration
 public class OpenApiConfig {
 
-  @Value("${server.servlet.context-path:/}")
+  @Value("${server.servlet.context-path}")
   public String contextPath;
 
   @Value("${spring.application.name}")
@@ -26,7 +26,7 @@ public class OpenApiConfig {
   private Environment environment;
 
   @Bean
-  public OpenAPI customOpenAPI() {
+  public OpenAPI openAPI() {
     return new OpenAPI()
         .info(new Info()
             .title("Center Service API")

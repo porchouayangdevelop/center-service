@@ -1,18 +1,15 @@
-cors:
-  allowed-origins:
-    - https://your-production-domain.com
-  allowed-methods: GET,POST,PUT,DELETE,PATCH,OPTIONS
-  allowed-headers:
-    - Content-Type
-    - Authorization
-    - X-Requested-With
-    - Accept
-    - Origin
-  exposed-headers: Authorization,Content-Type,X-Total-Count
-  allow-credentials: true
-  max-age: 3600
+server:
+  servlet:
+    context-path: /api/v1/${PROFILE_ACTIVES:prd}/center-service
+  port: ${PORT:9090}
+  address: ${HOST:0.0.0.0}
+#  error:
+#    include-stacktrace: never
 
 spring:
+  #  web:
+  #    resources:
+  #      add-mappings: true
   #  autoconfigure:
   #    exclude: com.scalar.maven.webjar.ScalarAutoConfiguration
   datasource:
@@ -77,35 +74,32 @@ spring:
       driver-class-name: org.mariadb.jdbc.Driver
       <<: *hikariSettings
 
+cors:
+  allowed-origins: ${CORS_ORIGINS:*}
+  allowed-methods: GET,POST,PUT,DELETE,PATCH,OPTIONS
+  allowed-headers: ${ALLOWED_HEADERS:Content-Type,Authorization,X-Requested-With,Accept,Origin}
+  exposed-headers: ${EXPOSED_HEADERS:Authorization,Content-Type,X-Total-Count}
+  allowed-credentials: ${ALLOWED_CREDENTIALS:false}
+  max-age: ${MAX_AGE:3600}
 
-
-server:
-  servlet:
-    context-path: /api/v1/${PROFILE_ACTIVES:prd}/center-service
-  port: ${PORT:9090}
-  address: ${HOST:0.0.0.0}
-  error:
-    include-stacktrace: never
 
 springdoc:
   api-docs:
     path: /api-docs
-    groups:
-      enabled: true
+    enabled: true
   swagger-ui:
     url: /api-docs
     csrf:
       enabled: false
-      cookie-name: "same-site"
     path: /swagger-ui.html
     enabled: true
 
-  show-actuator: false
-  packages-to-scan: com.cbs.center-service.controllers
+#  show-actuator: false
+#  packages-to-scan: com.cbs.center-service.controllers
 
 scalar:
   enabled: true
-  url: /api/v1/${PROFILE_ACTIVES:dev}/center-service/openapi.json
+  url: /api-docs
   path: /scalar
   theme: bluePlanet
   layout: modern
